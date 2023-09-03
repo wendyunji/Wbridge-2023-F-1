@@ -1,6 +1,7 @@
 import json
 from sklearn.model_selection import train_test_split
-
+from datasets.dataset_dict import DatasetDict
+from datasets import Dataset
 
 class TDIUC:
     def __init__(self):
@@ -48,9 +49,15 @@ class TDIUC:
         tdiuc['test'] = X_test
         tdiuc['train'] = X_train
         
-        return tdiuc
+        X_train_labels = [item['label'] for item in X_train]
+        X_test_labels = [item['label'] for item in X_test]
 
-if __name__ == "__main__":
-    data = TDIUC()
-    print(data.get_tdiuc()['test'][0])
+        X_train_texts = [item['text'] for item in X_train]
+        X_test_texts = [item['text'] for item in X_test]
+
+        tdiuc = {'train':Dataset.from_dict({'label':X_train_labels,'text':X_train_texts}),
+            'test':Dataset.from_dict({'label':X_test_labels,'text':X_test_texts})}
+
+        tdiuc = DatasetDict(tdiuc)
+        return tdiuc
     
