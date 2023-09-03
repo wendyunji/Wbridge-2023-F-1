@@ -1,1 +1,6 @@
 *test
+*test.ipynb
+
+__pycache__/
+
+README.md
