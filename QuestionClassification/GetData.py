@@ -44,7 +44,7 @@ class TDIUC:
             result_data.append({ "label": self.label2id[json_data[i]["question_type"]],"text": json_data[i]["question"],})
         tdiuc = {}
 
-        X_train, X_test = train_test_split(result_data, test_size=0.3, random_state=123)
+        X_train, X_test = train_test_split(result_data, test_size=0.2, random_state=123)
 
         tdiuc['test'] = X_test
         tdiuc['train'] = X_train
