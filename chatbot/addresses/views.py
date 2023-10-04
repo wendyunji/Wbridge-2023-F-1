@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Addresses
@@ -7,6 +7,8 @@ from rest_framework.parsers import JSONParser
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import json
+from .forms import ProductForm
+from django.core.files.storage import FileSystemStorage
 #from .faq_chatbot import faq_answer
 from .blip2_chat import blip2_vqa
 
@@ -103,3 +105,17 @@ def chat_service(request):
         return HttpResponse(json.dumps(output), status=200)
     else:
         return render(request, 'addresses/chat_test.html')
+    
+@csrf_exempt
+def image_upload(request):
+    if request.method == 'POST':
+        file = request.FILES['image']
+        # 이미지 이름 바꾸기
+        file.name = "test.jpg"
+        # 폴더가 있으면 그냥 넘기고 없으면 생성하자
+        fs = FileSystemStorage()
+        fs.save("test" + '/' + file.name, file)
+        return redirect('chat_service')
+    else:
+        form = ProductForm() # request.method 가 'GET'인 경우
+    return render(request, 'addresses/chat_test.html')
