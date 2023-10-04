@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import json
 #from .faq_chatbot import faq_answer
-
+from .blip2_chat import blip2_vqa
 
 # Create your views here.
 @csrf_exempt
@@ -94,8 +94,10 @@ def app_login(request):
 def chat_service(request):
     if request.method == 'POST':
         input1 = request.POST['input1']
-        response = '안녕'
-        #response = faq_answer(input1)
+        #response = '안녕'
+        # response = faq_answer(input1)
+        image_path = "https://www.jejunews.com/news/photo/202001/2155717_180654_1741.jpg"
+        response = blip2_vqa(input1, image_path)
         output = dict()
         output['response'] = response
         return HttpResponse(json.dumps(output), status=200)
