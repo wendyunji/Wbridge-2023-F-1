@@ -11,8 +11,15 @@ from .forms import ProductForm
 from django.core.files.storage import FileSystemStorage
 #from .faq_chatbot import faq_answer
 from .blip2_chat import blip2_vqa
+import random
+import os
 
-# Create your views here.
+# Create your views here.s
+@csrf_exempt
+def main(request):
+    return render(request,'v1/index.html')
+
+
 @csrf_exempt
 def address_list(request):
     if request.method == 'GET':
@@ -96,9 +103,11 @@ def app_login(request):
 def chat_service(request):
     if request.method == 'POST':
         input1 = request.POST['input1']
-        #response = '안녕'
+        #file = request.FILES['image']
+        #print(file.name)
+        # response = '안녕'
         # response = faq_answer(input1)
-        image_path = "https://www.jejunews.com/news/photo/202001/2155717_180654_1741.jpg"
+        image_path = os.getcwd()+"\\media\\test\\test.jpg"
         response = blip2_vqa(input1, image_path)
         output = dict()
         output['response'] = response
@@ -110,10 +119,15 @@ def chat_service(request):
 def image_upload(request):
     if request.method == 'POST':
         file = request.FILES['image']
+        print(file.name)
         # 이미지 이름 바꾸기
         file.name = "test.jpg"
         # 폴더가 있으면 그냥 넘기고 없으면 생성하자
         fs = FileSystemStorage()
+        # 이미 test.jpg가 있으면 기존 파일 삭제
+        if fs.exists("test" + '/' + file.name):
+            fs.delete("test" + '/' + file.name)
+
         fs.save("test" + '/' + file.name, file)
         return redirect('chat_service')
     else:

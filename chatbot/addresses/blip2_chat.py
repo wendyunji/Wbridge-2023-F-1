@@ -13,8 +13,8 @@ model.to(device)
 
 def blip2_vqa(prompt, image_path):
     
-    image = Image.open(requests.get(image_path, stream=True).raw)
-    prompt = "Question:" + prompt + " Answer:"
+    image = Image.open(image_path)
+    prompt = "Question Type : weather" + "Question:" + prompt + " Answer:"
     inputs = processor(images=image, text=prompt, return_tensors="pt").to(device="cuda", dtype=torch.float16)
     generated_ids = model.generate(**inputs)
     generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
